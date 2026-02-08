@@ -223,33 +223,65 @@ input[type="password"] {
     starContainer.appendChild(star);
   }
 
-  // --- UNLOCK ---
+  // --- UNLOCK & AUDIO FIX ---
   function unlock() {
-    const pass = document.getElementById('pass-input').value;
+    const passInput = document.getElementById('pass-input');
+    const pass = passInput.value;
+    const errorMsg = document.getElementById('error-msg');
+    const audio = document.getElementById('bgm');
+
+    // CHECK PASSWORD
     if(pass.toUpperCase() === "AM8084") {
-      document.getElementById('bgm').play().catch(e=>console.log("Audio needs touch"));
-      nextSlide(1);
+      
+      // 1. TRY TO PLAY AUDIO IMMEDIATELY
+      // This promise handles the browser blocking logic
+      var playPromise = audio.play();
+
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          // Audio started!
+          console.log("Audio playing");
+        })
+        .catch(error => {
+          // Auto-play was prevented.
+          console.log("Audio failed: " + error);
+          alert("Tap the screen once more to start the music! 🎵");
+          // Add a one-time listener to start audio on next touch
+          document.body.addEventListener('click', function() {
+            audio.play();
+          }, { once: true });
+        });
+      }
+
+      // 2. MOVE TO NEXT SLIDE
+      const lockScreen = document.getElementById('lock-screen');
+      lockScreen.style.opacity = '0';
+      setTimeout(() => {
+        lockScreen.style.display = 'none';
+        // Go to Slide 1
+        document.getElementById('s1').classList.add('active');
+      }, 1000);
+
     } else {
-      const err = document.getElementById('error-msg');
-      err.style.opacity = 1;
-      setTimeout(()=> err.style.opacity=0, 2000);
+      // WRONG PASSWORD LOGIC
+      errorMsg.style.opacity = 1;
+      passInput.value = ""; // Clear input
+      setTimeout(()=> errorMsg.style.opacity=0, 2000);
     }
   }
 
   // --- NAVIGATION ---
   function nextSlide(num) {
-    // Hide current
     const current = document.querySelector('.slide.active');
     if(current) {
       current.classList.remove('active');
       current.classList.add('exit');
     }
 
-    // Show next
     const next = document.getElementById('s' + num);
     next.classList.add('active');
     
-    // Logic for Slide 2 (Hard Times)
+    // Slide 2 Animation Logic
     if(num === 2) {
       const lines = [
         "When life is unfair...",
@@ -266,7 +298,6 @@ input[type="password"] {
         }, index * 1500);
       });
 
-      // Reveal final statement
       setTimeout(() => {
         const final = document.getElementById('s2-final');
         final.style.opacity = 1;
@@ -281,7 +312,7 @@ input[type="password"] {
 
   // --- FINALE ---
   function finale() {
-    const icons = ["💍", "✨", "🤍", "💒"];
+    const icons = ["💍", "✨", "🤍", "💒", "💙"];
     for(let i=0; i<40; i++) {
       const el = document.createElement('div');
       el.className = 'ring-float';
@@ -290,9 +321,9 @@ input[type="password"] {
       el.style.animationDuration = (Math.random()*5 + 5) + 's';
       document.body.appendChild(el);
     }
-    alert("I love you, Meghana. No matter what. ❤️");
+    // Optional: Play a sound effect or just show message
+    alert("I love you, Meghana. Always. 💍");
   }
 </script>
-
 </body>
 </html>
