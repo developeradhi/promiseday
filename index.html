@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Promise To You 💍</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+/* --- MIDNIGHT THEME --- */
+:root {
+  --bg-deep: #020024;
+  --bg-gradient: linear-gradient(180deg, #020024 0%, #090979 50%, #00d4ff 100%); /* Deep Night */
+  --gold: #C5A059;       /* Muted Gold */
+  --text-white: #E0E0E0; /* Soft White */
+  --glass: rgba(255, 255, 255, 0.05);
+}
+
+* { box-sizing: border-box; outline: none; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Lato', sans-serif;
+  background: radial-gradient(circle at center, #1a2a6c, #b21f1f, #fdbb2d); /* Fallback */
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); /* Deep Calm Blue */
+  color: var(--text-white);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- STARS BACKGROUND --- */
+.stars {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+.star {
+  position: absolute; background: white; border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+/* --- APP CONTAINER --- */
+#app {
+  width: 100%; max-width: 500px; height: 100vh;
+  position: relative; z-index: 10;
+}
+
+/* --- SLIDES --- */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  padding: 40px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 2s ease, transform 1.5s ease;
+}
+
+.slide.active { opacity: 1; pointer-events: all; }
+.slide.exit { opacity: 0; transform: scale(0.95); }
+
+/* --- TYPOGRAPHY --- */
+h1 {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  font-size: 32px;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  line-height: 1.4;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #cfcfcf;
+  margin-bottom: 30px;
+}
+
+.handwritten {
+  font-family: 'Great Vibes', cursive;
+  font-size: 32px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+  margin: 20px 0;
+}
+
+/* --- BUTTONS --- */
+.btn-promise {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 15px 40px;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: 0.4s;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+.btn-promise:hover {
+  background: var(--gold);
+  color: #0f2027;
+  box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
+}
+
+/* --- LOCK SCREEN --- */
+#lock-screen {
+  background: rgba(15, 32, 39, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+input[type="password"] {
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--gold);
+  color: white; font-size: 24px; text-align: center;
+  width: 200px; margin-bottom: 30px; letter-spacing: 5px; padding: 10px;
+}
+
+/* --- ANIMATIONS --- */
+.fade-in-line { opacity: 0; animation: appear 2s forwards; margin: 15px 0; }
+@keyframes appear { to { opacity: 1; } }
+
+/* Floating Rings for finale */
+.ring-float {
+  position: absolute; bottom: -50px;
+  font-size: 30px; opacity: 0.6;
+  animation: floatUp 10s linear forwards;
+}
+@keyframes floatUp { to { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+
+</style>
+</head>
+<body>
+
+<audio id="bgm" loop>
+  <source src="promise-music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="stars" id="stars-container"></div>
+
+<div id="app">
+
+  <div class="slide active" id="lock-screen">
+    <h1 style="font-size:24px;">For the one I choose.<br>Always.</h1>
+    <input type="password" id="pass-input" placeholder="••••••">
+    <button class="btn-promise" onclick="unlock()">Unlock Promise</button>
+    <p id="error-msg" style="font-size:12px; opacity:0; margin-top:10px; color:#ff6b6b;">Use our code, love.</p>
+  </div>
+
+  <div class="slide" id="s1">
+    <h1>If I make a promise...</h1>
+    <p>It’s not for a moment.<br>It's for every version of life we'll face together.</p>
+    <button class="btn-promise" onclick="nextSlide(2)">Read My Vows</button>
+  </div>
+
+  <div class="slide" id="s2">
+    <div id="hard-lines"></div>
+    <h1 id="s2-final" style="opacity:0; margin-top:30px; color:white;">I will not leave.</h1>
+    <button class="btn-promise" id="btn-s2" onclick="nextSlide(3)" style="opacity:0; pointer-events:none;">Continue</button>
+  </div>
+
+  <div class="slide" id="s3">
+    <p style="opacity:0.8">But also...</p>
+    <div style="text-align:left; width:100%; padding-left:20px; border-left: 2px solid var(--gold);">
+      <p style="margin:10px 0;">When we laugh...</p>
+      <p style="margin:10px 0;">When we win...</p>
+      <p style="margin:10px 0;">When everything feels right...</p>
+    </div>
+    <br>
+    <h1>I will stay.</h1>
+    <p>Not just for the joy.<br>But for <b>US</b>.</p>
+    <button class="btn-promise" onclick="nextSlide(4)">My Deepest Vow</button>
+  </div>
+
+  <div class="slide" id="s4">
+    <div class="handwritten">
+      "I promise to choose you even on days when love needs patience."
+    </div>
+    <div class="handwritten" style="font-size:24px; color:#ddd;">
+      "I don't promise perfection.<br>I promise presence."
+    </div>
+    <br>
+    <p style="color:var(--gold); font-size:16px; letter-spacing:2px;">NANNA JEEVANA NEENU</p>
+    <button class="btn-promise" onclick="nextSlide(5)">The Future</button>
+  </div>
+
+  <div class="slide" id="s5">
+    <p>This is the only future I want.</p>
+    <p>I will not look for anyone else.<br>I will not imagine another life.</p>
+    <hr style="width:50%; border:0; border-top:1px solid rgba(255,255,255,0.2); margin:30px 0;">
+    <h1>I will marry you.<br>And only you.</h1>
+    <button class="btn-promise" onclick="nextSlide(6)">Seal The Promise</button>
+  </div>
+
+  <div class="slide" id="s6">
+    <h1 style="font-size:40px;">Happy Promise Day</h1>
+    <p>I don't promise to never fail.<br>I promise to never leave.</p>
+    <div style="margin-top:40px;">
+      <button class="btn-promise" onclick="finale()">Always Yours 💍</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // --- STARS GENERATOR ---
+  const starContainer = document.getElementById('stars-container');
+  for(let i=0; i<100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.width = Math.random() * 3 + 'px';
+    star.style.height = star.style.width;
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDuration = Math.random() * 3 + 2 + 's';
+    starContainer.appendChild(star);
+  }
+
+  // --- UNLOCK ---
+  function unlock() {
+    const pass = document.getElementById('pass-input').value;
+    if(pass.toUpperCase() === "AM8084") {
+      document.getElementById('bgm').play().catch(e=>console.log("Audio needs touch"));
+      nextSlide(1);
+    } else {
+      const err = document.getElementById('error-msg');
+      err.style.opacity = 1;
+      setTimeout(()=> err.style.opacity=0, 2000);
+    }
+  }
+
+  // --- NAVIGATION ---
+  function nextSlide(num) {
+    // Hide current
+    const current = document.querySelector('.slide.active');
+    if(current) {
+      current.classList.remove('active');
+      current.classList.add('exit');
+    }
+
+    // Show next
+    const next = document.getElementById('s' + num);
+    next.classList.add('active');
+    
+    // Logic for Slide 2 (Hard Times)
+    if(num === 2) {
+      const lines = [
+        "When life is unfair...",
+        "When we disagree...",
+        "When silence feels heavy...",
+        "When days are tiring..."
+      ];
+      const div = document.getElementById('hard-lines');
+      div.innerHTML = "";
+      
+      lines.forEach((line, index) => {
+        setTimeout(() => {
+          div.innerHTML += `<p class="fade-in-line" style="color:#aaa;">${line}</p>`;
+        }, index * 1500);
+      });
+
+      // Reveal final statement
+      setTimeout(() => {
+        const final = document.getElementById('s2-final');
+        final.style.opacity = 1;
+        final.style.transition = "opacity 2s";
+        
+        const btn = document.getElementById('btn-s2');
+        btn.style.opacity = 1;
+        btn.style.pointerEvents = "all";
+      }, lines.length * 1500 + 500);
+    }
+  }
+
+  // --- FINALE ---
+  function finale() {
+    const icons = ["💍", "✨", "🤍", "💒"];
+    for(let i=0; i<40; i++) {
+      const el = document.createElement('div');
+      el.className = 'ring-float';
+      el.innerText = icons[Math.floor(Math.random()*icons.length)];
+      el.style.left = Math.random()*100 + '%';
+      el.style.animationDuration = (Math.random()*5 + 5) + 's';
+      document.body.appendChild(el);
+    }
+    alert("I love you, Meghana. No matter what. ❤️");
+  }
+</script>
+
+</body>
+</html>
