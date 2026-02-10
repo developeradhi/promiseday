@@ -11,22 +11,20 @@
 /* --- MIDNIGHT THEME --- */
 :root {
   --bg-deep: #020024;
-  --bg-gradient: linear-gradient(180deg, #020024 0%, #090979 50%, #00d4ff 100%); /* Deep Night */
-  --gold: #C5A059;       /* Muted Gold */
-  --text-white: #E0E0E0; /* Soft White */
-  --glass: rgba(255, 255, 255, 0.05);
+  --gold: #C5A059;       
+  --text-white: #E0E0E0; 
 }
 
 * { box-sizing: border-box; outline: none; }
 
 body {
   margin: 0;
-  height: 100vh;
+  /* Use min-height and dvh for better mobile support */
+  min-height: 100dvh;
   font-family: 'Lato', sans-serif;
-  background: radial-gradient(circle at center, #1a2a6c, #b21f1f, #fdbb2d); /* Fallback */
-  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); /* Deep Calm Blue */
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
   color: var(--text-white);
-  overflow: hidden;
+  overflow-x: hidden; /* Allow vertical scroll if content is long, hide horizontal */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +33,6 @@ body {
 /* --- STARS BACKGROUND --- */
 .stars {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: transparent;
   z-index: 0;
   pointer-events: none;
 }
@@ -47,47 +44,67 @@ body {
 
 /* --- APP CONTAINER --- */
 #app {
-  width: 100%; max-width: 500px; height: 100vh;
-  position: relative; z-index: 10;
+  width: 100%; 
+  max-width: 500px; 
+  min-height: 100dvh;
+  position: relative; 
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --- SLIDES --- */
 .slide {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
+  position: absolute; 
+  width: 100%;
+  /* Use padding-top/bottom to prevent clipping */
+  padding: 40px 20px;
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
   text-align: center;
-  padding: 40px;
-  opacity: 0; pointer-events: none;
-  transition: opacity 2s ease, transform 1.5s ease;
+  opacity: 0; 
+  pointer-events: none;
+  transition: opacity 1.2s ease, transform 1s ease;
+  transform: translateY(20px); /* Slight slide up effect */
 }
 
-.slide.active { opacity: 1; pointer-events: all; }
-.slide.exit { opacity: 0; transform: scale(0.95); }
+.slide.active { 
+  opacity: 1; 
+  pointer-events: all; 
+  transform: translateY(0);
+}
+
+.slide.exit { 
+  opacity: 0; 
+  transform: scale(0.95) translateY(-20px); 
+}
 
 /* --- TYPOGRAPHY --- */
 h1 {
   font-family: 'Cinzel', serif;
   color: var(--gold);
-  font-size: 32px;
+  font-size: clamp(24px, 6vw, 32px); /* Responsive font size */
   margin-bottom: 20px;
   letter-spacing: 2px;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 p {
-  font-size: 18px;
-  line-height: 1.8;
+  font-size: clamp(16px, 4vw, 18px);
+  line-height: 1.6;
   color: #cfcfcf;
-  margin-bottom: 30px;
+  margin: 10px 0;
 }
 
 .handwritten {
   font-family: 'Great Vibes', cursive;
-  font-size: 32px;
+  font-size: clamp(26px, 7vw, 32px);
   color: #fff;
   text-shadow: 0 0 10px rgba(255,255,255,0.3);
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 /* --- BUTTONS --- */
@@ -95,14 +112,15 @@ p {
   background: transparent;
   border: 1px solid var(--gold);
   color: var(--gold);
-  padding: 15px 40px;
+  padding: 12px 30px;
   font-family: 'Cinzel', serif;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 2px;
   cursor: pointer;
   transition: 0.4s;
   text-transform: uppercase;
-  margin-top: 20px;
+  margin-top: 25px;
+  flex-shrink: 0; /* Prevents button from squishing */
 }
 .btn-promise:hover {
   background: var(--gold);
@@ -112,28 +130,30 @@ p {
 
 /* --- LOCK SCREEN --- */
 #lock-screen {
-  background: rgba(15, 32, 39, 0.95);
-  backdrop-filter: blur(10px);
+  background: rgba(15, 32, 39, 0.98);
+  backdrop-filter: blur(15px);
   z-index: 100;
+  inset: 0; /* Cover full screen */
 }
 input[type="password"] {
   background: transparent; border: none;
-  border-bottom: 1px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
   color: white; font-size: 24px; text-align: center;
-  width: 200px; margin-bottom: 30px; letter-spacing: 5px; padding: 10px;
+  width: 180px; margin-bottom: 20px; letter-spacing: 5px; padding: 10px;
 }
 
 /* --- ANIMATIONS --- */
-.fade-in-line { opacity: 0; animation: appear 2s forwards; margin: 15px 0; }
+.fade-in-line { opacity: 0; animation: appear 1s forwards; margin: 8px 0 !important; }
 @keyframes appear { to { opacity: 1; } }
 
-/* Floating Rings for finale */
 .ring-float {
   position: absolute; bottom: -50px;
   font-size: 30px; opacity: 0.6;
-  animation: floatUp 10s linear forwards;
+  z-index: 1000;
+  pointer-events: none;
+  animation: floatUp 8s linear forwards;
 }
-@keyframes floatUp { to { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+@keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
 
 </style>
 </head>
@@ -146,12 +166,11 @@ input[type="password"] {
 <div class="stars" id="stars-container"></div>
 
 <div id="app">
-
   <div class="slide active" id="lock-screen">
-    <h1 style="font-size:24px;">For the one I choose.<br>Always.</h1>
+    <h1>For the one I choose.<br>Always.</h1>
     <input type="password" id="pass-input" placeholder="••••••">
     <button class="btn-promise" onclick="unlock()">Unlock Promise</button>
-    <p id="error-msg" style="font-size:12px; opacity:0; margin-top:10px; color:#ff6b6b;">Use our code, love.</p>
+    <p id="error-msg" style="font-size:14px; opacity:0; margin-top:15px; color:#ff6b6b;">Use our code, love.</p>
   </div>
 
   <div class="slide" id="s1">
@@ -162,19 +181,18 @@ input[type="password"] {
 
   <div class="slide" id="s2">
     <div id="hard-lines"></div>
-    <h1 id="s2-final" style="opacity:0; margin-top:30px; color:white;">I will not leave.</h1>
+    <h1 id="s2-final" style="opacity:0; margin-top:20px; color:white;">I will not leave.</h1>
     <button class="btn-promise" id="btn-s2" onclick="nextSlide(3)" style="opacity:0; pointer-events:none;">Continue</button>
   </div>
 
   <div class="slide" id="s3">
-    <p style="opacity:0.8">But also...</p>
-    <div style="text-align:left; width:100%; padding-left:20px; border-left: 2px solid var(--gold);">
-      <p style="margin:10px 0;">When we laugh...</p>
-      <p style="margin:10px 0;">When we win...</p>
-      <p style="margin:10px 0;">When everything feels right...</p>
+    <p style="opacity:0.8; margin-bottom: 10px;">But also...</p>
+    <div style="text-align:left; width:100%; max-width: 300px; padding-left:20px; border-left: 2px solid var(--gold); margin: 0 auto;">
+      <p style="margin:5px 0;">When we laugh...</p>
+      <p style="margin:5px 0;">When we win...</p>
+      <p style="margin:5px 0;">When everything feels right...</p>
     </div>
-    <br>
-    <h1>I will stay.</h1>
+    <h1 style="margin-top: 20px;">I will stay.</h1>
     <p>Not just for the joy.<br>But for <b>US</b>.</p>
     <button class="btn-promise" onclick="nextSlide(4)">My Deepest Vow</button>
   </div>
@@ -183,28 +201,25 @@ input[type="password"] {
     <div class="handwritten">
       "I promise to choose you even on days when love needs patience."
     </div>
-    <div class="handwritten" style="font-size:24px; color:#ddd;">
+    <div class="handwritten" style="font-size:22px; color:#ddd;">
       "I don't promise perfection.<br>I promise presence."
     </div>
-    <br>
-    <p style="color:var(--gold); font-size:16px; letter-spacing:2px;">NANNA JEEVANA NEENU</p>
+    <p style="color:var(--gold); font-size:16px; letter-spacing:2px; margin-top: 20px;">NANNA JEEVANA NEENU</p>
     <button class="btn-promise" onclick="nextSlide(5)">The Future</button>
   </div>
 
   <div class="slide" id="s5">
     <p>This is the only future I want.</p>
     <p>I will not look for anyone else.<br>I will not imagine another life.</p>
-    <hr style="width:50%; border:0; border-top:1px solid rgba(255,255,255,0.2); margin:30px 0;">
+    <hr style="width:50%; border:0; border-top:1px solid rgba(255,255,255,0.2); margin:20px 0;">
     <h1>I will marry you.<br>And only you.</h1>
     <button class="btn-promise" onclick="nextSlide(6)">Seal The Promise</button>
   </div>
 
   <div class="slide" id="s6">
-    <h1 style="font-size:40px;">Happy Promise Day</h1>
+    <h1 style="font-size:36px;">Happy Promise Day</h1>
     <p>I don't promise to never fail.<br>I promise to never leave.</p>
-    <div style="margin-top:40px;">
-      <button class="btn-promise" onclick="finale()">Always Yours 💍</button>
-    </div>
+    <button class="btn-promise" onclick="finale()">Always Yours 💍</button>
   </div>
 
 </div>
@@ -215,7 +230,7 @@ input[type="password"] {
   for(let i=0; i<100; i++) {
     const star = document.createElement('div');
     star.className = 'star';
-    star.style.width = Math.random() * 3 + 'px';
+    star.style.width = Math.random() * 2 + 1 + 'px';
     star.style.height = star.style.width;
     star.style.left = Math.random() * 100 + '%';
     star.style.top = Math.random() * 100 + '%';
@@ -223,54 +238,32 @@ input[type="password"] {
     starContainer.appendChild(star);
   }
 
-  // --- UNLOCK & AUDIO FIX ---
   function unlock() {
     const passInput = document.getElementById('pass-input');
     const pass = passInput.value;
     const errorMsg = document.getElementById('error-msg');
     const audio = document.getElementById('bgm');
 
-    // CHECK PASSWORD
     if(pass.toUpperCase() === "AM8084") {
-      
-      // 1. TRY TO PLAY AUDIO IMMEDIATELY
-      // This promise handles the browser blocking logic
-      var playPromise = audio.play();
+      audio.play().catch(() => {
+        document.body.addEventListener('click', () => audio.play(), { once: true });
+      });
 
-      if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          // Audio started!
-          console.log("Audio playing");
-        })
-        .catch(error => {
-          // Auto-play was prevented.
-          console.log("Audio failed: " + error);
-          alert("Tap the screen once more to start the music! 🎵");
-          // Add a one-time listener to start audio on next touch
-          document.body.addEventListener('click', function() {
-            audio.play();
-          }, { once: true });
-        });
-      }
-
-      // 2. MOVE TO NEXT SLIDE
       const lockScreen = document.getElementById('lock-screen');
-      lockScreen.style.opacity = '0';
+      lockScreen.classList.remove('active');
+      lockScreen.classList.add('exit');
+      
       setTimeout(() => {
         lockScreen.style.display = 'none';
-        // Go to Slide 1
         document.getElementById('s1').classList.add('active');
       }, 1000);
-
     } else {
-      // WRONG PASSWORD LOGIC
       errorMsg.style.opacity = 1;
-      passInput.value = ""; // Clear input
+      passInput.value = "";
       setTimeout(()=> errorMsg.style.opacity=0, 2000);
     }
   }
 
-  // --- NAVIGATION ---
   function nextSlide(num) {
     const current = document.querySelector('.slide.active');
     if(current) {
@@ -281,36 +274,26 @@ input[type="password"] {
     const next = document.getElementById('s' + num);
     next.classList.add('active');
     
-    // Slide 2 Animation Logic
     if(num === 2) {
-      const lines = [
-        "When life is unfair...",
-        "When we disagree...",
-        "When silence feels heavy...",
-        "When days are tiring..."
-      ];
+      const lines = ["When life is unfair...", "When we disagree...", "When silence feels heavy...", "When days are tiring..."];
       const div = document.getElementById('hard-lines');
       div.innerHTML = "";
       
       lines.forEach((line, index) => {
         setTimeout(() => {
           div.innerHTML += `<p class="fade-in-line" style="color:#aaa;">${line}</p>`;
-        }, index * 1500);
+        }, index * 1200);
       });
 
       setTimeout(() => {
-        const final = document.getElementById('s2-final');
-        final.style.opacity = 1;
-        final.style.transition = "opacity 2s";
-        
+        document.getElementById('s2-final').style.opacity = 1;
         const btn = document.getElementById('btn-s2');
         btn.style.opacity = 1;
         btn.style.pointerEvents = "all";
-      }, lines.length * 1500 + 500);
+      }, lines.length * 1200 + 400);
     }
   }
 
-  // --- FINALE ---
   function finale() {
     const icons = ["💍", "✨", "🤍", "💒", "💙"];
     for(let i=0; i<40; i++) {
@@ -318,11 +301,10 @@ input[type="password"] {
       el.className = 'ring-float';
       el.innerText = icons[Math.floor(Math.random()*icons.length)];
       el.style.left = Math.random()*100 + '%';
-      el.style.animationDuration = (Math.random()*5 + 5) + 's';
+      el.style.animationDuration = (Math.random()*4 + 4) + 's';
       document.body.appendChild(el);
     }
-    // Optional: Play a sound effect or just show message
-    alert("I love you, Meghana. Always. 💍");
+    setTimeout(() => alert("I love you, Meghana. Always. 💍"), 500);
   }
 </script>
 </body>
